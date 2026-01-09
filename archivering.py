@@ -1,0 +1,63 @@
+import os
+from datetime import date
+import zipfile
+
+def lazy_logger(log: str) -> None:
+        with open("log.log","a+") as file:
+            file.write(log)
+            file.write("\n")
+
+
+def main():
+    YEAR = str(date.today().year)
+    dirs_to_zip = []
+
+    try:
+        with open('secrets.txt', 'r') as file:
+            path = file.readline().strip()
+    except:
+        lazy_logger("Failed to read secrets.")
+        return 1
+
+    if not os.path.isdir(path):
+        lazy_logger("Secrets path isn't a dir.")
+        return 1
+
+    for root, dirs, _ in os.walk(path, topdown=False):
+        for d in dirs:
+            target = root +"\\" + d
+            if len(d) == len(YEAR) and d<YEAR and os.path.isdir(target):
+                dirs_to_zip.append(target)
+
+    for directory in dirs_to_zip:
+        #try:
+        #    if os.path.exists(f"{directory}.zip"):
+        #        os.remove(f"{directory}.zip")
+        #except:
+        #    lazy_logger(f"Failed to remove zip dir.\n{directory}")
+        #    continue
+
+        try:
+            with zipfile.ZipFile(
+                f"{directory}.zip",
+                'w',
+                zipfile.ZIP_DEFLATED
+            ) as zip_file:
+                for root,_,files in os.walk(directory):
+                    for file in files:
+                        file_path = os.path.join(root,file)
+                        if os.path.isfile(file_path):
+                            zip_file.write(
+                                file_path,
+                                os.path.relpath(file_path,directory)
+                            )
+                        else:
+                            lazy_logger(f"Zipper, {file_path} not file.")
+                            return 1
+        except:
+            lazy_logger(f"Failed to zip something in {directory}.")
+            continue
+
+
+if __name__ == "__main__":
+    main()
