@@ -1,5 +1,6 @@
 import os
 from datetime import date
+import shutil
 import zipfile
 
 def lazy_logger(log: str) -> None:
@@ -13,7 +14,7 @@ def main():
     dirs_to_zip = []
 
     try:
-        with open('secrets.txt', 'r') as file:
+        with open('archiver\\secrets.txt', 'r') as file:
             path = file.readline().strip()
     except:
         lazy_logger("Failed to read secrets.")
@@ -30,13 +31,15 @@ def main():
                 dirs_to_zip.append(target)
 
     for directory in dirs_to_zip:
-        #try:
-        #    if os.path.exists(f"{directory}.zip"):
-        #        os.remove(f"{directory}.zip")
-        #except:
-        #    lazy_logger(f"Failed to remove zip dir.\n{directory}")
-        #    continue
-
+        print(f"Zipping {directory}...")
+        if os.path.isfile(directory+".zip"):
+            lazy_logger(f"Zipper, {directory}.zip already exists.")
+            print(f"Zipped {directory}.")
+            try:
+                shutil.rmtree(directory)
+            except:
+                lazy_logger(f"Failed to remove directory.\n{directory}")
+            continue
         try:
             with zipfile.ZipFile(
                 f"{directory}.zip",
@@ -57,6 +60,8 @@ def main():
         except:
             lazy_logger(f"Failed to zip something in {directory}.")
             continue
+        print(f"Zipped {directory}.")
+        shutil.rmtree(directory)
 
 
 if __name__ == "__main__":
