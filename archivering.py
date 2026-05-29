@@ -1,6 +1,7 @@
 import os
 from datetime import date
 import shutil
+import configparser
 import zipfile
 
 def lazy_logger(log: str) -> None:
@@ -13,20 +14,15 @@ def main():
     YEAR = str(date.today().year)
     dirs_to_zip = []
 
-    try:
-        with open('archiver\\secrets.txt', 'r') as file:
-            path = file.readline().strip()
-    except:
+    cfg = configparser.ConfigParser()
+    path = cfg['archiver']['hr_path'] if cfg.read('nothing') else None
+    if path is None or not os.path.isdir(path):
         lazy_logger("Failed to read secrets.")
-        return 1
-
-    if not os.path.isdir(path):
-        lazy_logger("Secrets path isn't a dir.")
-        return 1
+        return
 
     for root, dirs, _ in os.walk(path, topdown=False):
         for d in dirs:
-            target = root +"\\" + d
+            target = root + "\\" + d
             if len(d) == len(YEAR) and d<YEAR and os.path.isdir(target):
                 dirs_to_zip.append(target)
 
