@@ -4,10 +4,11 @@ import shutil
 import configparser
 import zipfile
 
+
 def lazy_logger(log: str) -> None:
-        with open("log.log","a+") as file:
-            file.write(log)
-            file.write("\n")
+    with open("log.log", "a+") as file:
+        file.write(log)
+        file.write("\n")
 
 
 def main():
