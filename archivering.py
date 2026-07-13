@@ -34,8 +34,8 @@ def main():
             print(f"Zipped {directory}.")
             try:
                 shutil.rmtree(directory)
-            except:
-                lazy_logger(f"Failed to remove directory.\n{directory}")
+            except Exception as e:
+                lazy_logger(f"Failed to remove directory.\n{directory}\n{e}")
             continue
         try:
             with zipfile.ZipFile(
@@ -54,8 +54,8 @@ def main():
                         else:
                             lazy_logger(f"Zipper, {file_path} not file.")
                             return 1
-        except:
-            lazy_logger(f"Failed to zip something in {directory}.")
+        except Exception as e:
+            lazy_logger(f"Failed to zip something in {directory}.\n{e}")
             continue
         print(f"Zipped {directory}.")
         shutil.rmtree(directory)
