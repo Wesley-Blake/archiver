@@ -1,17 +1,21 @@
-import os
-from datetime import date
-import shutil
+"""Archive directories older than the current year into zip files."""
+
 import configparser
+import os
+import shutil
 import zipfile
+from datetime import date
 
 
 def lazy_logger(log: str) -> None:
-    with open("log.log", "a+") as file:
+    """Append a log message to the log file."""
+    with open("log.log", "a+", encoding="utf-8") as file:
         file.write(log)
         file.write("\n")
 
 
 def main():
+    """Archive year-based directories that are older than the current year."""
     YEAR = str(date.today().year)
     dirs_to_zip = []
 
