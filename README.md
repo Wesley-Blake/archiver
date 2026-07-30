@@ -17,7 +17,7 @@ whose names are older than the current year, and archives them into zip files.
 2. Run the script with Python:
 
    ```bash
-   python archiving.py
+   python main.py
    ```
 
 3. Review the generated zip files and the log file if anything fails.
