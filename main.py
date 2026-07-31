@@ -59,6 +59,17 @@ def main():
         except Exception as e:
             lazy_logger(f"Failed to zip something in {directory}.\n{e}")
             continue
+
+        try:
+            with zipfile.ZipFile(f"{directory}.zip", "r") as verify_zip:
+                bad_file = verify_zip.testzip()
+        except Exception as e:
+            lazy_logger(f"Failed to verify zip for {directory}.\n{e}")
+            continue
+        if bad_file is not None:
+            lazy_logger(f"Zip verification failed for {directory}: corrupt file {bad_file}")
+            continue
+
         print(f"Zipped {directory}.")
         shutil.rmtree(directory)
 
